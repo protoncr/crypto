@@ -1,0 +1,9 @@
+name: tgcrypto
+version: 0.1.0
+
+authors:
+  - Chris Watson <cawatson1993@gmail.com>
+
+crystal: 0.33.0
+
+license: MIT
