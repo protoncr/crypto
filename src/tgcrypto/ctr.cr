@@ -2,10 +2,12 @@ require "./aes"
 
 module TGCrypto
   module CTR
-    # Uses CTR two way encryption to encrypt and decrypt data.
-    # Takes an optional one byte array as a `state` parameter,
-    # used to keep track of the position in a stream.
-    def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), state : Indexable(UInt8) = [0_u8])
+    # Encrypt/decrypt a buffer using CTR256.
+    #
+    # `data` must be a non-empty buffer who's length is a multiple
+    # of 16 bytes. `key` must be a 32 byte encryption key and `iv` must
+    # be 16 bytes.
+    def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), state : Indexable(UInt8) = [0_u8]) : Array(Uint8)
       unless data.size > 0
         raise "data must not be empty"
       end

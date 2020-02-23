@@ -2,19 +2,25 @@ require "./aes"
 
 module TGCrypto
   module CBC
-    # Takes a 16 bit input and a 60 bit key and encrypt the input
-    # using CBC256.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8))
+    # Encrypt a buffer using CBC256.
+    #
+    # `data` must be a non-empty buffer of any length.
+    # `key` must be a 32 byte encryption key and `iv` must
+    # be 16 bytes.
+    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
       self.xcrypt(data, key, iv, true)
     end
 
-    # Takes a 16 bit input and a 60 bit key and decrypt the input
-    # using CBC256.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8))
+    # Decrypt a buffer using CBC256.
+    #
+    # `data` must be a non-empty buffer of any length.
+    # `key` must be a 32 byte encryption key and `iv` must
+    # be 16 bytes.
+    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
       self.xcrypt(data, key, iv, false)
     end
 
-    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool)
+    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(Uint8)
       unless data.size > 0
         raise "data must not be empty"
       end
