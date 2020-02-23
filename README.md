@@ -24,7 +24,7 @@ require "tgcrypto"
 
 - [x] AES256
 - [x] CBC256
-- [ ] CTR256
+- [X] CTR256
 - [ ] IGE256
 - [ ] More?
 

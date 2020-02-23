@@ -16,11 +16,7 @@ module TGCrypto
 
     private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool)
       unless data.size > 0
-        raise "data byte size must not be zero"
-      end
-
-      unless data.size % 16 == 0
-        raise "data byte size must be a multiple of 16"
+        raise "data must not be empty"
       end
 
       unless key.size == 32
@@ -29,6 +25,10 @@ module TGCrypto
 
       unless iv.size == 16
         raise "iv byte size must be 16 bytes exactly"
+      end
+
+      unless state.in?(0..15)
+        raise "state must be in the range 0..15"
       end
 
       output = data.dup.as(Array(UInt8))
