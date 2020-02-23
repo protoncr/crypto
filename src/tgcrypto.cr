@@ -1,6 +1,7 @@
-# TODO: Write documentation for `Tgcrypto`
-module Tgcrypto
-  VERSION = "0.1.0"
+require "./tgcrypto/version"
+require "./tgcrypto/aes"
 
-  # TODO: Put your code here
+# TGCrypto is a pure Crystal cryptography library, currently
+# focused on Telegram specific cryptography.
+module Tgcrypto
 end

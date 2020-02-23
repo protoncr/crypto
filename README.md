@@ -23,7 +23,7 @@ require "tgcrypto"
 ## Roadmap
 
 - [x] AES256
-- [ ] CBC256
+- [x] CBC256
 - [ ] CTR256
 - [ ] IGE256
 - [ ] More?

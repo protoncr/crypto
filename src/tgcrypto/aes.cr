@@ -1,5 +1,8 @@
 module TGCrypto
   module AES
+    BLOCK_SIZE = 16
+    EXPANDED_KEY_SIZE = 60
+
     Te0 = StaticArray[
       0xc66363a5_u32, 0xf87c7c84_u32, 0xee777799_u32, 0xf67b7b8d_u32, 0xfff2f20d_u32, 0xd66b6bbd_u32, 0xde6f6fb1_u32, 0x91c5c554_u32,
       0x60303050_u32, 0x02010103_u32, 0xce6767a9_u32, 0x562b2b7d_u32, 0xe7fefe19_u32, 0xb5d7d762_u32, 0x4dababe6_u32, 0xec76769a_u32,
@@ -347,10 +350,13 @@ module TGCrypto
       (SBOX[word >> 4 & 0x0f][word & 0xf]) + (SBOX[word >> 12 & 0x0f][word >> 8 & 0x0f] << 8) + (SBOX[word >> 20 & 0x0f][word >> 16 & 0x0f] << 16) + (SBOX[word >> 28 & 0x0f][word >> 24 & 0x0f] << 24)
     end
 
-    def self.create_encryption_key(key : StaticArray(UInt8, 32))
+    # Takes a 32 bit key and uses it to generate a 60 bit encryption key.
+    def self.create_encryption_key(key : Indexable(UInt8))
+      raise "Key size must be 32 bytes exactly" unless key.size == 32
+
       nk = 8_u32
       tmp = 0_u32
-      expanded_key = StaticArray(UInt32, 60).new(0)
+      expanded_key = Array(UInt32).new(60, 0)
 
       (0...60).each do |i|
         if i < nk
@@ -376,7 +382,10 @@ module TGCrypto
       expanded_key
     end
 
-    def self.create_decryption_key(key : StaticArray(UInt8, 32))
+    # Takes a 32 bit key and uses it to generate a 60 bit decryption key.
+    def self.create_decryption_key(key : Indexable(UInt8))
+      raise "Key size must be 32 bytes exactly" unless key.size == 32
+
       expanded_key = self.create_encryption_key(key)
 
       tmp = 0; i = 0; j = 56
@@ -410,8 +419,13 @@ module TGCrypto
       expanded_key
     end
 
-    def self.encrypt(input : StaticArray(UInt8, 16), key : StaticArray(UInt32, 60))
-      output = StaticArray(UInt8, 16).new(0)
+    # Takes a 16 bit input and a 60 bit key and encrypt the input
+    # using AES256.
+    def self.encrypt(input : Indexable(UInt8), key : Indexable(UInt32))
+      raise "Input buffer size must be 16 bytes exactly" unless input.size == 16
+      raise "Key size must be 60 bytes exactly" unless key.size == 60
+
+      output = Array(UInt8).new(16, 0)
 
       s0 = get(input.to_unsafe, 0) ^ key[0]
       s1 = get(input.to_unsafe, 4) ^ key[1]
@@ -526,8 +540,13 @@ module TGCrypto
       output
     end
 
-    def self.decrypt(input : StaticArray(UInt8, 16), key : StaticArray(UInt32, 60))
-      output = StaticArray(UInt8, 16).new(0)
+    # Takes a 16 bit input and a 60 bit key and decrypt the input
+    # using AES256.
+    def self.decrypt(input : Indexable(UInt8), key : Indexable(UInt32))
+      raise "Input buffer size must be 16 bytes exactly" unless input.size == 16
+      raise "Key size must be 60 bytes exactly" unless key.size == 60
+
+      output = Array(UInt8).new(16, 0)
 
       s0 = get(input.to_unsafe, 0) ^ key[0]
       s1 = get(input.to_unsafe, 4) ^ key[1]
