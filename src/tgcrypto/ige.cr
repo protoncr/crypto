@@ -6,7 +6,7 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` and `iv` must each contain 32 bytes.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
+    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
       self.xcrypt(data, key, iv, true)
     end
 
@@ -14,11 +14,11 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` and `iv` must each contain 32 bytes.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
+    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
       self.xcrypt(data, key, iv, false)
     end
 
-    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(Uint8)
+    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(UInt8)
       unless data.size > 0
         raise "data must not be empty"
       end

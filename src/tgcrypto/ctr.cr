@@ -7,7 +7,7 @@ module TGCrypto
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` must be a 32 byte encryption key and `iv` must
     # be 16 bytes.
-    def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), state : Indexable(UInt8) = [0_u8]) : Array(Uint8)
+    def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), state : Indexable(UInt8) = [0_u8]) : Array(UInt8)
       unless data.size > 0
         raise "data must not be empty"
       end
@@ -46,11 +46,11 @@ module TGCrypto
           end
 
           if state[0] == 0
-            k = AES::BLOCK_SIZE - 1
             (0..(AES::BLOCK_SIZE - 1)).reverse_each do |k|
-              unless (iv[k] += 1).zero?
+              unless (iv[k]).zero?
                 break
               end
+              iv[k] += 1
             end
             chunk = AES.encrypt(iv, enc_key)
           end

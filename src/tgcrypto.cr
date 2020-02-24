@@ -1,4 +1,5 @@
 require "./tgcrypto/version"
+require "./tgcrypto/padding"
 require "./tgcrypto/aes"
 require "./tgcrypto/cbc"
 require "./tgcrypto/ctr"

@@ -423,7 +423,7 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` must be a 60 byte encryption key.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(Uint8)
+    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(UInt8)
       raise "data buffer size must be 16 bytes exactly" unless data.size == 16
       raise "Key size must be 60 bytes exactly" unless key.size == 60
 
@@ -546,7 +546,7 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` must be a 60 byte encryption key.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(Uint8)
+    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(UInt8)
       raise "data buffer size must be 16 bytes exactly" unless data.size == 16
       raise "Key size must be 60 bytes exactly" unless key.size == 60
 

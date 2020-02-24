@@ -7,7 +7,7 @@ module TGCrypto
     # `data` must be a non-empty buffer of any length.
     # `key` must be a 32 byte encryption key and `iv` must
     # be 16 bytes.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
+    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
       self.xcrypt(data, key, iv, true)
     end
 
@@ -16,11 +16,11 @@ module TGCrypto
     # `data` must be a non-empty buffer of any length.
     # `key` must be a 32 byte encryption key and `iv` must
     # be 16 bytes.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(Uint8)
+    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
       self.xcrypt(data, key, iv, false)
     end
 
-    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(Uint8)
+    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(UInt8)
       unless data.size > 0
         raise "data must not be empty"
       end
@@ -31,10 +31,6 @@ module TGCrypto
 
       unless iv.size == 16
         raise "iv byte size must be 16 bytes exactly"
-      end
-
-      unless state.in?(0..15)
-        raise "state must be in the range 0..15"
       end
 
       output = data.dup.as(Array(UInt8))
@@ -51,7 +47,6 @@ module TGCrypto
           iv = encrypted
         end
       else
-        puts iv
         next_iv = Array(UInt8).new(AES::BLOCK_SIZE)
         dec_key = AES.create_decryption_key(key)
 
