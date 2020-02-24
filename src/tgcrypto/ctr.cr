@@ -29,29 +29,30 @@ module TGCrypto
       end
 
       unless state[0].in?(0..15)
-        "state value must be in range 0..15"
+        raise "state value must be in range 0..15"
       end
 
       output = data.to_a.dup
+      iv = iv.to_a.dup
+      key = key.to_a.dup
+
       enc_key = AES.create_encryption_key(key)
       chunk = AES.encrypt(iv, enc_key)
 
       (0...data.size).step(AES::BLOCK_SIZE).each do |i|
         (0...Math.min(data.size - 1, AES::BLOCK_SIZE)).each do |j|
           output[i + j] ^= chunk[state[0]]
-          state.to_unsafe[0] += 1
+          state[0] += 1
 
           if state[0] >= AES::BLOCK_SIZE
             state[0] = 0_u8
-          end
 
-          if state[0] == 0
-            (0..(AES::BLOCK_SIZE - 1)).reverse_each do |k|
-              unless (iv[k]).zero?
+            (0...AES::BLOCK_SIZE).reverse_each do |k|
+              unless (iv[k] &+= 1).zero?
                 break
               end
-              iv[k] += 1
             end
+
             chunk = AES.encrypt(iv, enc_key)
           end
         end
