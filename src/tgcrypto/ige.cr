@@ -42,17 +42,11 @@ module TGCrypto
       chunk = Array(UInt8).new(AES::BLOCK_SIZE, 0)
       buffer = Array(UInt8).new(AES::BLOCK_SIZE, 0)
 
-      expanded_key = encrypt ?
-        AES.create_encryption_key(key) :
-        AES.create_decryption_key(key)
+      expanded_key = encrypt ? AES.create_encryption_key(key) : AES.create_decryption_key(key)
 
-      iv1 = encrypt ?
-        iv[0, AES::BLOCK_SIZE] :
-        iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE]
+      iv1 = encrypt ? iv[0, AES::BLOCK_SIZE] : iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE]
 
-      iv2 = encrypt ?
-        iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE] :
-        iv[0, AES::BLOCK_SIZE]
+      iv2 = encrypt ? iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE] : iv[0, AES::BLOCK_SIZE]
 
       (0...data.size).step(AES::BLOCK_SIZE).each do |i|
         chunk = data[i, AES::BLOCK_SIZE]
@@ -61,9 +55,7 @@ module TGCrypto
           buffer[j] = data[i + j] ^ iv1[j]
         end
 
-        output[i, AES::BLOCK_SIZE] = encrypt ?
-          AES.encrypt(buffer, expanded_key) :
-          AES.decrypt(buffer, expanded_key)
+        output[i, AES::BLOCK_SIZE] = encrypt ? AES.encrypt(buffer, expanded_key) : AES.decrypt(buffer, expanded_key)
 
         (0...AES::BLOCK_SIZE).each do |j|
           output[i + j] ^= iv2[j]

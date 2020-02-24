@@ -26,7 +26,6 @@ describe TGCrypto::CTR do
       DFC9C58D B67AADA6 13C2DD08 457941A6
       TEXT
 
-
       encrypted = TGCrypto::CTR.xcrypt(plaintext, key, iv)
       encrypted.should eq(ciphertext)
     end

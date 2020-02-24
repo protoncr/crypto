@@ -26,7 +26,6 @@ describe TGCrypto::CBC do
       B2EB05E2 C39BE9FC DA6C1907 8C6A9D1B
       TEXT
 
-
       encrypted = TGCrypto::CBC.encrypt(plaintext, key, iv)
       encrypted.should eq(ciphertext)
     end
