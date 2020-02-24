@@ -35,7 +35,7 @@ module TGCrypto
         raise "iv byte size must be 32 bytes exactly"
       end
 
-      output = data.dup.as(Array(UInt8))
+      output = data.to_a.dup
       chunk = Array(UInt8).new(AES::BLOCK_SIZE, 0)
       buffer = Array(UInt8).new(AES::BLOCK_SIZE, 0)
 

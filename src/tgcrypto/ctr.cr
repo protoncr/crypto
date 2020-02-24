@@ -32,7 +32,7 @@ module TGCrypto
         "state value must be in range 0..15"
       end
 
-      output = data.dup.as(Array(UInt8))
+      output = data.to_a.dup
       enc_key = AES.create_encryption_key(key)
       chunk = AES.encrypt(iv, enc_key)
 

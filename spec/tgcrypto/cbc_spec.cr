@@ -60,5 +60,25 @@ describe TGCrypto::CBC do
       decrypted = TGCrypto::CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
+
+    describe "exceptions" do
+      it "should raise if the data is empty" do
+        expect_raises(Exception, "data must not be empty") do
+          TGCrypto::CBC.encrypt([] of UInt8, RANDOM.random_bytes(32), RANDOM.random_bytes(16))
+        end
+      end
+
+      it "should raise if the key size is not 32 bytes" do
+        expect_raises(Exception, "key byte size must be 32 bytes exactly") do
+          TGCrypto::CBC.encrypt(RANDOM.random_bytes(16), RANDOM.random_bytes(31), RANDOM.random_bytes(16))
+        end
+      end
+
+      it "should raise if the iv size is not 16 bytes" do
+        expect_raises(Exception, "iv byte size must be 16 bytes exactly") do
+          TGCrypto::CBC.encrypt(RANDOM.random_bytes(16), RANDOM.random_bytes(32), RANDOM.random_bytes(15))
+        end
+      end
+    end
   end
 end

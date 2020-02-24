@@ -33,7 +33,7 @@ module TGCrypto
         raise "iv byte size must be 16 bytes exactly"
       end
 
-      output = data.dup.as(Array(UInt8))
+      output = data.to_a.dup
 
       if encrypt
         enc_key = AES.create_encryption_key(key)
