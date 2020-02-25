@@ -120,10 +120,28 @@ puts data == decrypted
 
 ## Roadmap
 
-- [x] AES256
-- [x] CBC256
-- [X] CTR256
-- [X] IGE256
+- [ ] Cipher Based
+  - [ ] AES
+    - [ ] 128
+    - [ ] 192
+    - [x] 256
+  - [ ] CBC
+    - [ ] 128
+    - [ ] 192
+    - [x] 256
+  - [ ] CTR256
+    - [ ] 128
+    - [ ] 192
+    - [x] 256
+  - [ ] IGE256
+    - [ ] 128
+    - [ ] 192
+    - [x] 256
+- [x] Public Key Cryptography
+  - [x] RSA
+- [ ] Key Derivation Functions
+  - [ ] KDF
+    - [ ] PBKDF2
 - [ ] More?
 
 ## Contributing

@@ -1,9 +1,7 @@
 require "./tgcrypto/version"
-require "./tgcrypto/padding"
-require "./tgcrypto/aes"
-require "./tgcrypto/cbc"
-require "./tgcrypto/ctr"
-require "./tgcrypto/ige"
+require "./tgcrypto/utils/padding"
+require "./tgcrypto/utils/prime"
+require "./tgcrypto/cipher/aes"
 
 # TGCrypto is a pure Crystal cryptography library, currently
 # focused on Telegram specific cryptography.
