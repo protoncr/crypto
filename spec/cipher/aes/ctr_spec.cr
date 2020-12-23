@@ -1,4 +1,4 @@
-require "../spec_helper"
+require "../../spec_helper"
 
 describe Crypto::CTR do
   describe ".xcrypt" do

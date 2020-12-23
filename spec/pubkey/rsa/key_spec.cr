@@ -1,13 +1,13 @@
 require "../../spec_helper"
 
-public_key  = Crypto::RSA::Key.new(n = 3233, e = 17)
-private_key = Crypto::RSA::Key.new(n, d = 2753)
+public_key  = Crypto::RSA::PublicKey.new(n = 3233, e = 17)
+private_key = Crypto::RSA::PrivateKey.new(n, e, d = 2753, p = 6629676349677357307, q = 1761705206514555017)
 key_pair    = Crypto::RSA::KeyPair.new(private_key, public_key)
 
 describe Crypto::RSA::Key do
   describe "#private_key" do
     it "returns a key" do
-      key_pair.private_key.should be_a(Crypto::RSA::Key)
+      key_pair.private_key.should be_a(Crypto::RSA::PrivateKey)
     end
 
     it "returns the private key" do
@@ -23,7 +23,7 @@ describe Crypto::RSA::Key do
 
   describe "#public_key" do
     it "returns a key" do
-      key_pair.public_key.should be_a(Crypto::RSA::Key)
+      key_pair.public_key.should be_a(Crypto::RSA::PublicKey)
     end
 
     it "returns the public key" do

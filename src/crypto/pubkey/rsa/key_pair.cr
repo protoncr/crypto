@@ -16,39 +16,28 @@ module Crypto
         end
       end
 
-      def self.generate(bits, exponent = 65537)
-        unless Prime.prime?(bits) && Prime.prime?(exponent)
-          raise ArgumentError.new("both numbers must be prime.")
+      def self.generate(bits, exponent = 65537, accurate = true)
+        if bits < 16
+          raise "Key too small"
         end
 
-        if bits == exponent
-          raise ArgumentError.new("p and q cannot be equal")
+        p, q, e, d = {0, 0, 0, 0}
+
+        loop do
+          # Regenerate p and q values, until calculate_keys doesn't raise
+          p, q = self.find_pq(bits // 2, accurate)
+          begin
+            e, d = self.calculate_keys_custom_exponent(p, q, exponent: exponent)
+            break
+          rescue ex
+          end
         end
 
-        bits = bits.to_i64
-        exponent = exponent.to_i64
-
-        # n = pq
-        n = bits * exponent
-
-        # Phi is the totient of n
-        phi = (bits - 1) * (exponent - 1)
-
-        # Choose an integer e such that e and phi(n) are coprime
-        e = rand(1_i64..phi)
-
-        # Use Euclid's Algorithm to verify that e and phi(n) are comprime
-        g = e.gcd(phi)
-        while g != 1
-          e = rand(1_i64..phi)
-          g = e.gcd(phi)
-        end
-
-        # Use Extended Euclid's Algorithm to generate the private key
-        d = Math.mod_inverse(e, phi)
+        # Create the key objects
+        n = p * q
 
         # Return the new keypair
-        new(Key.new(e, n), Key.new(d, n))
+        new(PrivateKey.new(n, e, d, p, q), PublicKey.new(n, e))
       end
 
       # Returns `true` if this is a valid RSA key pair according to
@@ -78,7 +67,7 @@ module Crypto
       # Returns the RSA modulus for this key pair.
       #
       def modulus
-        private_key ? private_key.not_nil!.modulus : public_key.not_nil!.modulus
+        private_key ? private_key.not_nil!.n : public_key.not_nil!.n
       end
 
       # Encrypts the given `plaintext` using the public key from this key
@@ -153,6 +142,57 @@ module Crypto
 
       protected def verify_integer(signature, plaintext)
         PKCS1.rsavp1(public_key.not_nil!, signature) == plaintext
+      end
+
+      private def self.find_pq(nbits, accurate = true)
+        total_bits = nbits * 2
+
+        shift = nbits // 16
+        pbits = nbits + shift
+        qbits = nbits - shift
+
+        p = Crypto::Prime.random(pbits).to_big_i
+        q = Crypto::Prime.random(qbits).to_big_i
+
+        is_acceptable = ->(p : BigInt, q : BigInt) {
+          if p == q
+            false
+          elsif !accurate
+            true
+          else
+            found_size = (p * q).bit_length
+            total_bits == found_size
+          end
+        }
+
+        change_p = false
+        while !is_acceptable.call(p, q)
+          puts "foo"
+          # Change p on one iteration and q on the other
+          if change_p
+            p = Crypto::Prime.random(pbits).to_big_i
+          else
+            q = Crypto::Prime.random(qbits).to_big_i
+          end
+          change_p = !change_p
+        end
+
+        {Math.max(p, q), Math.min(p, q)}
+      end
+
+      private def self.calculate_keys_custom_exponent(p, q, exponent)
+        p = p.to_big_i
+        q = q.to_big_i
+        exponent = exponent.to_big_i
+
+        phi_n = (p - 1) * (q - 1)
+
+        d = Math.modinv(exponent, phi_n)
+        if (exponent * d) % phi_n != 1
+          raise "e #{exponent} and d #{d} are not multi. inv. modulo phi_n #{phi_n}"
+        end
+
+        {exponent, d}
       end
     end
   end

@@ -22,7 +22,7 @@ module Crypto
         {0, 1}
       else
         x, y = self.egcd(b, a.modulo(b))
-        {y, x - y * a.div(b)}
+        {y, x - y * (a // b)}
       end
     end
 
@@ -40,7 +40,7 @@ module Crypto
     #   Crypto::Math.modinv(6, 36)  #=> ArithmeticError
     #
     def self.modinv(b, m)
-      if m > 0 && coprime?(b, m)
+      if m > 0 && Prime.coprime?(b, m)
         egcd(b, m).first.modulo(m)
       else
         raise ArithmeticError.new("modulus #{m} is not positive") if m <= 0
@@ -63,7 +63,10 @@ module Crypto
     # ```
     #
     def self.modpow(base, exponent, modulus)
-      result = 1
+      base = base.to_big_i
+      exponent = exponent.to_big_i
+      modulus = modulus.to_big_i
+      result = 1_i64
       while exponent > 0
         result   = (base * result) % modulus unless (exponent & 1).zero?
         base     = (base * base)   % modulus

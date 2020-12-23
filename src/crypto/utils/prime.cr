@@ -99,19 +99,28 @@ module Crypto
     # == Parameters
     #
     # `value`: an arbitrary integer to be checked.
-    # `generator`: optional. A pseudo-prime generator.
-    def self.prime?(value : Int, generator = Generator23.new)
-      return false if value < 2
-      generator.each do |num|
-        q, r = value.divmod num
-        return true if q < num
-        return false if r == 0
+    def self.prime?(n, k = 10)
+      n = n.to_big_i
+      neg_one_mod = d = n - 1
+      s = 0.to_big_i
+      while d.even?; d >>= 1; s += 1 end  # d is odd after s shifts
+      k.times do
+        b = rand(n - 4) + 2     # random witness base b
+        y = Math.modpow(b, d, n)     # y = (b**d) mod n
+        next if y == 1 || y == neg_one_mod
+        (s - 1).times do
+          y = (y.to_big_i * y) % n       # y = (y**2) mod n
+          return false if y == 1
+          break if y == neg_one_mod
+        end
+        return false if y != neg_one_mod
       end
+      true                         # prime (with high probability)
     end
 
     # see `.prime?`
-    def prime?(value : Int, generator = Generator23.new)
-      self.prime(vale, generator)
+    def prime?(n, k = 10)
+      Prime.prime(n, k)
     end
 
     # Re-composes a prime factorization and returns the product.
@@ -148,7 +157,7 @@ module Crypto
 
     # see `.int_from_factorization`
     def int_from_factorization(pd : Indexable(Indexable(Int)))
-      self.int_from_factorization(pd)
+      Prime.int_from_factorization(pd)
     end
 
     # Returns the factorization of `value`.
@@ -222,7 +231,7 @@ module Crypto
 
     # see `.factorize`
     def factorize(value, generator = Generator23.new)
-      self.factorize(value, generator)
+      Prime.factorize(value, generator)
     end
 
     # Returns `true` if the integer `a` is coprime (relatively prime) to
@@ -234,7 +243,7 @@ module Crypto
     # RSA::Math.coprime?(6, 27) #=> false
     # ```
     #
-    def self.coprime(a, b)
+    def self.coprime?(a, b)
       egcd = Math.egcd(a, b)
       (a * egcd[0] + b * egcd[1]) == 1
     end
@@ -252,9 +261,27 @@ module Crypto
       values.sample(count, random)
     end
 
+    def self.random(bits, random = Random::DEFAULT)
+      loop do
+        int = self.random_odd_int(bits, random)
+        if self.prime?(int)
+          return int
+        end
+      end
+    end
+
     # see `.random`
     def random(start, stop, count, generator = Generator23.new, random = Random::DEFAULT)
-      self.random(start, stop, count, generator, random)
+      Prime.random(start, stop, count, generator, random)
+    end
+
+    def random(bits, random = Random::DEFAULT)
+      Prime.random(bits, random)
+    end
+
+    private def self.random_odd_int(bits, random = Random::DEFAULT)
+      bytes = random.random_bytes(bits < 8 ? 1 : bits // 8)
+      IO::ByteFormat::LittleEndian.decode(UInt64, bytes) | 1
     end
 
     # An abstract class for enumerating pseudo-prime numbers.
