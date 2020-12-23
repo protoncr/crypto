@@ -1,4 +1,4 @@
-module TGCrypto
+module Crypto
   module Padding
     # Performs padding on the given plaintext to ensure that it is a multiple
     # of the given block_size value in the parameter. Uses the PKCS7 standard

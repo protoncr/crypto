@@ -1,4 +1,4 @@
-module TGCrypto
+module Crypto
   module RSA
     # Support for the PKCS #1 (aka RFC 3447) padding schemes.
     #
@@ -17,22 +17,23 @@ module TGCrypto
       # ```
       #
       def self.i2osp(x, len = nil)
-        begin
-          len && x >= 256_i64 ** len
-        rescue ex : OverflowError
-          raise ArgumentError.new("integer too large")
+        raise ArgumentError.new("integer too large") if len && x >= 256_i64 ** len
+
+        a = Array(UInt8).new
+        while x > 0
+          b = x & 0xFF
+          x >>= 8
+          a << b.to_u8
         end
 
-        s = String.build do |buffer|
-          while x > 0
-            b = (x & 0xFF).chr
-            x >>= 8
-            buffer << b
+        a.reverse!
+        if len
+          while a.size != len
+            a.unshift(0x00_u8)
           end
         end
 
-        s = s.reverse
-        s = len ? s.rjust(len, '\0') : s
+        Slice.new(a.to_unsafe, a.size)
       end
 
       # Converts an octet string into a nonnegative integer.
@@ -46,7 +47,8 @@ module TGCrypto
       # ```
       #
       def self.os2ip(x)
-        x.bytes.reduce(0) { |n, b| (n << 8) + b }
+        x = x.is_a?(String) ? x.bytes : x.to_a
+        x.reduce(0_u64) { |n, b| (n << 8) + b }
       end
 
       # Produces a ciphertext representative from a message representative

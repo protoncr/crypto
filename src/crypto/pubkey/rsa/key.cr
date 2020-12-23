@@ -1,21 +1,23 @@
-module TGCrypto
+require "big"
+
+module Crypto
   module RSA
     # Represents a RSA private or public key.
     #
     class Key
       # The RSA modulus, a positive integer.
       #
-      getter modulus : Int64
+      getter modulus : BigInt
 
       # The RSA public or private exponent, a positive integer.
       #
-      getter exponent : Int64
+      getter exponent : BigInt
 
       # Initializes a new key.
       #
-      def initialize(modulus : Int, exponent : Int)
-        @modulus  = modulus.to_i64
-        @exponent = exponent.to_i64
+      def initialize(modulus, exponent)
+        @modulus  = modulus.to_big_i
+        @exponent = exponent.to_big_i
       end
 
       # Returns `true` if this is a valid RSA key according to `PKCS1`.

@@ -1,6 +1,6 @@
 require "../utils/prime"
 
-module TGCrypto
+module Crypto
   class SSHKey
     SSH_TYPES = {
       "ssh-rsa"             => "rsa",

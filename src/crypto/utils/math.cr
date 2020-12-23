@@ -1,6 +1,6 @@
 require "./prime"
 
-module TGCrypto
+module Crypto
   module Math
     extend ::Math
 
@@ -11,10 +11,10 @@ module TGCrypto
     #
     # Example
     # ```
-    # TGCrypto::Math.egcd(120, 23)    #=> [-9, 47]
-    # TGCrypto::Math.egcd(421, 111)   #=> [-29, 110]
-    # TGCrypto::Math.egcd(93, 219)    #=> [33, -14]
-    # TGCrypto::Math.egcd(4864, 3458) #=> [32, -45]
+    # Crypto::Math.egcd(120, 23)    #=> [-9, 47]
+    # Crypto::Math.egcd(421, 111)   #=> [-29, 110]
+    # Crypto::Math.egcd(93, 219)    #=> [33, -14]
+    # Crypto::Math.egcd(4864, 3458) #=> [32, -45]
     # ```
     #
     def self.egcd(a, b)
@@ -34,10 +34,10 @@ module TGCrypto
     #
     # Example
     # ```
-    #   TGCrypto::Math.modinv(3, 11)  #=> 4
-    #   TGCrypto::Math.modinv(6, 35)  #=> 6
-    #   TGCrypto::Math.modinv(-6, 35) #=> 29
-    #   TGCrypto::Math.modinv(6, 36)  #=> ArithmeticError
+    #   Crypto::Math.modinv(3, 11)  #=> 4
+    #   Crypto::Math.modinv(6, 35)  #=> 6
+    #   Crypto::Math.modinv(-6, 35) #=> 29
+    #   Crypto::Math.modinv(6, 36)  #=> ArithmeticError
     #
     def self.modinv(b, m)
       if m > 0 && coprime?(b, m)
@@ -58,8 +58,8 @@ module TGCrypto
     #
     # Example
     # ```
-    # TGCrypto::Math.modpow(5, 3, 13)   #=> 8
-    # TGCrypto::Math.modpow(4, 13, 497) #=> 445
+    # Crypto::Math.modpow(5, 3, 13)   #=> 8
+    # Crypto::Math.modpow(4, 13, 497) #=> 445
     # ```
     #
     def self.modpow(base, exponent, modulus)

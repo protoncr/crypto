@@ -1,7 +1,7 @@
 require "big"
 require "./math"
 
-module TGCrypto
+module Crypto
   INT_MAX = Int64::MAX
 
   #

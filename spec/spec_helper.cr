@@ -1,4 +1,4 @@
 require "spec"
-require "../src/tgcrypto"
+require "../src/crypto"
 
 RANDOM = Random.new

@@ -1,12 +1,12 @@
 require "./aes"
 
-module TGCrypto
+module Crypto
   module IGE
     # Encrypt a buffer using IGE256.
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` and `iv` must each contain 32 bytes.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
+    def self.encrypt(data : Bytes, key : Bytes, iv : Bytes) : Bytes
       self.xcrypt(data, key, iv, true)
     end
 
@@ -14,11 +14,11 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` and `iv` must each contain 32 bytes.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8)) : Array(UInt8)
+    def self.decrypt(data : Bytes, key : Bytes, iv : Bytes) : Bytes
       self.xcrypt(data, key, iv, false)
     end
 
-    private def self.xcrypt(data : Indexable(UInt8), key : Indexable(UInt8), iv : Indexable(UInt8), encrypt : Bool) : Array(UInt8)
+    private def self.xcrypt(data : Bytes, key : Bytes, iv : Bytes, encrypt : Bool) : Bytes
       unless data.size > 0
         raise "data must not be empty"
       end
@@ -35,12 +35,12 @@ module TGCrypto
         raise "iv byte size must be 32 bytes exactly"
       end
 
-      output = data.to_a.dup
-      iv = iv.to_a.dup
-      key = key.to_a.dup
+      output = data.clone
+      key = key.clone
+      iv = iv.clone
 
-      chunk = Array(UInt8).new(AES::BLOCK_SIZE, 0)
-      buffer = Array(UInt8).new(AES::BLOCK_SIZE, 0)
+      chunk = Bytes.new(AES::BLOCK_SIZE)
+      buffer = Bytes.new(AES::BLOCK_SIZE)
 
       expanded_key = encrypt ? AES.create_encryption_key(key) : AES.create_decryption_key(key)
 
@@ -49,13 +49,14 @@ module TGCrypto
       iv2 = encrypt ? iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE] : iv[0, AES::BLOCK_SIZE]
 
       (0...data.size).step(AES::BLOCK_SIZE).each do |i|
-        chunk = data[i, AES::BLOCK_SIZE]
+        (data + i).copy_to(chunk)
 
         (0...AES::BLOCK_SIZE).each do |j|
           buffer[j] = data[i + j] ^ iv1[j]
         end
 
-        output[i, AES::BLOCK_SIZE] = encrypt ? AES.encrypt(buffer, expanded_key) : AES.decrypt(buffer, expanded_key)
+        modded = encrypt ? AES.encrypt(buffer, expanded_key) : AES.decrypt(buffer, expanded_key)
+        (output + i).copy_from(modded)
 
         (0...AES::BLOCK_SIZE).each do |j|
           output[i + j] ^= iv2[j]

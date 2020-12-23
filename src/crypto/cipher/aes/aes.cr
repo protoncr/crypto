@@ -1,4 +1,4 @@
-module TGCrypto
+module Crypto
   module AES
     BLOCK_SIZE        = 16
     EXPANDED_KEY_SIZE = 60
@@ -351,12 +351,12 @@ module TGCrypto
     end
 
     # Takes a 32 bit key and uses it to generate a 60 bit encryption key.
-    def self.create_encryption_key(key : Indexable(UInt8)) : Array(UInt32)
+    def self.create_encryption_key(key : Bytes) : Slice(UInt32)
       raise "Key size must be 32 bytes exactly" unless key.size == 32
 
       nk = 8_u32
       tmp = 0_u32
-      expanded_key = Array(UInt32).new(60, 0)
+      expanded_key = Slice(UInt32).new(60)
 
       (0...60).each do |i|
         if i < nk
@@ -383,7 +383,7 @@ module TGCrypto
     end
 
     # Takes a 32 bit key and uses it to generate a 60 bit decryption key.
-    def self.create_decryption_key(key : Indexable(UInt8)) : Array(UInt32)
+    def self.create_decryption_key(key : Bytes) : Slice(UInt32)
       raise "Key size must be 32 bytes exactly" unless key.size == 32
 
       expanded_key = self.create_encryption_key(key)
@@ -423,11 +423,11 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` must be a 60 byte encryption key.
-    def self.encrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(UInt8)
+    def self.encrypt(data : Bytes, key : Indexable(UInt32)) : Bytes
       raise "data buffer size must be 16 bytes exactly" unless data.size == 16
       raise "Key size must be 60 bytes exactly" unless key.size == 60
 
-      output = Array(UInt8).new(16, 0)
+      output = Bytes.new(16)
 
       s0 = get(data.to_unsafe, 0) ^ key[0]
       s1 = get(data.to_unsafe, 4) ^ key[1]
@@ -546,11 +546,11 @@ module TGCrypto
     #
     # `data` must be a non-empty buffer who's length is a multiple
     # of 16 bytes. `key` must be a 60 byte encryption key.
-    def self.decrypt(data : Indexable(UInt8), key : Indexable(UInt32)) : Array(UInt8)
+    def self.decrypt(data : Bytes, key : Indexable(UInt32)) : Bytes
       raise "data buffer size must be 16 bytes exactly" unless data.size == 16
       raise "Key size must be 60 bytes exactly" unless key.size == 60
 
-      output = Array(UInt8).new(16, 0)
+      output = Bytes.new(16)
 
       s0 = get(data.to_unsafe, 0) ^ key[0]
       s1 = get(data.to_unsafe, 4) ^ key[1]
