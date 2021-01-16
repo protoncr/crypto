@@ -139,6 +139,12 @@ puts data == decrypted
     - [x] 256
 - [x] Public Key Cryptography
   - [x] RSA
+- Hashing
+  - [ ] Blake
+    - [x] Blake2b
+    - [x] Blake2s
+    - [ ] Blake3
+    - [ ] Argon2
 - [ ] Key Derivation Functions
   - [ ] KDF
     - [ ] PBKDF2

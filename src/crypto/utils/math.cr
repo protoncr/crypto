@@ -103,6 +103,61 @@ module Crypto
       ::Math.log(n, 256)
     end
 
+    def self.factorize(pq)
+      if pq % 2 == 0
+        return {2, pq // 2}
+      end
+
+      y = rand(1..(pq - 1))
+      c = rand(1..(pq - 1))
+      m = rand(1..(pq - 1))
+      g = r = q = 1
+      x = ys = 0
+
+      while g == 1
+        x = y
+
+        0.upto(r).each do |i|
+          y = (modpow(y, 2, pq) + c) % pq
+        end
+
+        k = 0
+        while k < r && g == 1
+          ys = y
+          0.upto(Math.min(m, r - k)).each do |i|
+            y = (modpow(y, 2, pq) + c) % pq
+            q = q * abs(x - y) % pq
+          end
+
+          q = gcd(q, pq)
+          k += m
+        end
+
+        r *= 2
+      end
+
+      if g == pq
+        loop do
+          ys = (modpow(ys, 2, pq) + c) % pq
+          g = gcd(abs(x - ys), pq)
+          if g > 1
+            break
+          end
+        end
+      end
+
+      p, q = {g, pq // g}
+      p < q ? {p, q} : {q, p}
+    end
+
+    def self.gcd(a, b)
+      a.to_i64.gcd(b.to_i64)
+    end
+
+    def self.abs(a)
+      a.abs
+    end
+
     # Euclid's extended algorithm for finding the multiplicative inverse of two numbers
     def self.mod_inverse(e, phi)
       d_int = 0_i64
