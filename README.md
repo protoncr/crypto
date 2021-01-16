@@ -1,5 +1,7 @@
 # Crypto Crystal
 
+![Specs](https://github.com/protoncr/crypto/workflows/Specs/badge.svg)
+
 Pure Crystal port of [pyrogram/tgcrpto](https://github.com/pyrogram/tgcrpto). Implements various Cryptograpgy algorithms that are especially usefull for Telegram's MTPtoto protocol.
 
 ## Installation
