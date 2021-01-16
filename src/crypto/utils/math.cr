@@ -11,10 +11,10 @@ module Crypto
     #
     # Example
     # ```
-    # Crypto::Math.egcd(120, 23)    #=> [-9, 47]
-    # Crypto::Math.egcd(421, 111)   #=> [-29, 110]
-    # Crypto::Math.egcd(93, 219)    #=> [33, -14]
-    # Crypto::Math.egcd(4864, 3458) #=> [32, -45]
+    # Crypto::Math.egcd(120, 23)    # => [-9, 47]
+    # Crypto::Math.egcd(421, 111)   # => [-29, 110]
+    # Crypto::Math.egcd(93, 219)    # => [33, -14]
+    # Crypto::Math.egcd(4864, 3458) # => [32, -45]
     # ```
     #
     def self.egcd(a, b)
@@ -58,8 +58,8 @@ module Crypto
     #
     # Example
     # ```
-    # Crypto::Math.modpow(5, 3, 13)   #=> 8
-    # Crypto::Math.modpow(4, 13, 497) #=> 445
+    # Crypto::Math.modpow(5, 3, 13)   # => 8
+    # Crypto::Math.modpow(4, 13, 497) # => 445
     # ```
     #
     def self.modpow(base, exponent, modulus)
@@ -68,8 +68,8 @@ module Crypto
       modulus = modulus.to_big_i
       result = 1_i64
       while exponent > 0
-        result   = (base * result) % modulus unless (exponent & 1).zero?
-        base     = (base * base)   % modulus
+        result = (base * result) % modulus unless (exponent & 1).zero?
+        base = (base * base) % modulus
         exponent >>= 1
       end
       result
@@ -79,15 +79,15 @@ module Crypto
     #
     # Example
     # ```
-    # (1..5).map { |n| RSA::Math.phi(n) } #=> [1, 1, 2, 2, 4]
+    # (1..5).map { |n| RSA::Math.phi(n) } # => [1, 1, 2, 2, 4]
     # ```
     #
     def self.phi(n)
       case
-      when n < 0     then raise ArgumentError.new("expected a positive integer, but got #{n}")
-      when n < 2     then 1 # by convention
+      when n < 0           then raise ArgumentError.new("expected a positive integer, but got #{n}")
+      when n < 2           then 1 # by convention
       when Prime.prime?(n) then n - 1
-      else Prime.factorize(n).reduce(n) { |product, (p, e)| product * (ONE - (ONE / BigDecimal.new(p.to_s))) }.round.to_i
+      else                      Prime.factorize(n).reduce(n) { |product, (p, e)| product * (ONE - (ONE / BigDecimal.new(p.to_s))) }.round.to_i
       end
     end
 
@@ -95,8 +95,8 @@ module Crypto
     #
     # Example
     # ```
-    # RSA::Math.log256(16)   #=> 0.5
-    # RSA::Math.log256(1024) #=> 1.25
+    # RSA::Math.log256(16)   # => 0.5
+    # RSA::Math.log256(1024) # => 1.25
     # ```
     #
     def self.log256(n)
@@ -178,4 +178,3 @@ module Crypto
     end
   end
 end
-

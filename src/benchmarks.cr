@@ -11,7 +11,7 @@ module Crypto
 
     def self.blake2b
       h = Crypto::Blake2b.new(Crypto::Blake2b::OUT_BYTES)
-      buf = Random.new.random_bytes(8<<10)
+      buf = Random.new.random_bytes(8 << 10)
       Benchmark.bm do |x|
         x.report("write 1k") do
           100000.times { h.update(buf[0...1024]) }

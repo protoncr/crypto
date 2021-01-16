@@ -129,16 +129,13 @@ module Crypto
         PKCS1.rsaep(public_key.not_nil!, plaintext)
       end
 
-
       protected def decrypt_integer(ciphertext)
         PKCS1.rsadp(private_key.not_nil!, ciphertext)
       end
 
-
       protected def sign_integer(plaintext)
         PKCS1.rsasp1(private_key.not_nil!, plaintext)
       end
-
 
       protected def verify_integer(signature, plaintext)
         PKCS1.rsavp1(public_key.not_nil!, signature) == plaintext

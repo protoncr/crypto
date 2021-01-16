@@ -11,9 +11,9 @@ module Crypto
       #
       # Example
       # ```
-      # RSA::PKCS1.i2osp(9_202_000, 2)    #=> ArgumentError: integer too large
-      # RSA::PKCS1.i2osp(9_202_000, 3)    #=> "\x8C\x69\x50"
-      # RSA::PKCS1.i2osp(9_202_000, 4)    #=> "\x00\x8C\x69\x50"
+      # RSA::PKCS1.i2osp(9_202_000, 2) # => ArgumentError: integer too large
+      # RSA::PKCS1.i2osp(9_202_000, 3) # => "\x8C\x69\x50"
+      # RSA::PKCS1.i2osp(9_202_000, 4) # => "\x00\x8C\x69\x50"
       # ```
       #
       def self.i2osp(x, len = nil)
@@ -43,7 +43,7 @@ module Crypto
       #
       # Example
       # ```
-      # RSA::PKCS1.os2ip("\x8C\x69\x50")  #=> 9_202_000
+      # RSA::PKCS1.os2ip("\x8C\x69\x50") # => 9_202_000
       # ```
       #
       def self.os2ip(x)

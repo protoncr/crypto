@@ -1,8 +1,8 @@
 require "../../spec_helper"
 
-public_key  = Crypto::RSA::PublicKey.new(n = 3233, e = 17)
+public_key = Crypto::RSA::PublicKey.new(n = 3233, e = 17)
 private_key = Crypto::RSA::PrivateKey.new(n, e, d = 2753, p = 6629676349677357307, q = 1761705206514555017)
-key_pair    = Crypto::RSA::KeyPair.new(private_key, public_key)
+key_pair = Crypto::RSA::KeyPair.new(private_key, public_key)
 
 describe Crypto::RSA::Key do
   describe "#private_key" do

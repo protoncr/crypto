@@ -37,7 +37,6 @@ module Crypto
       @passphrase = passphrase
       @comment = comment || ""
       @directives = directives || [] of String
-
     end
   end
 end

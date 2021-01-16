@@ -12,7 +12,7 @@ module Crypto
   #
   # ```
   # Prime.each(100) do |prime|
-  #   p prime  #=> 2, 3, 5, 7, 11, ...., 97
+  #   p prime # => 2, 3, 5, 7, 11, ...., 97
   # end
   # ```
   #
@@ -103,19 +103,21 @@ module Crypto
       n = n.to_big_i
       neg_one_mod = d = n - 1
       s = 0.to_big_i
-      while d.even?; d >>= 1; s += 1 end  # d is odd after s shifts
+      while d.even?
+        d >>= 1; s += 1
+      end # d is odd after s shifts
       k.times do
-        b = rand(n - 4) + 2     # random witness base b
-        y = Math.modpow(b, d, n)     # y = (b**d) mod n
+        b = rand(n - 4) + 2      # random witness base b
+        y = Math.modpow(b, d, n) # y = (b**d) mod n
         next if y == 1 || y == neg_one_mod
         (s - 1).times do
-          y = (y.to_big_i * y) % n       # y = (y**2) mod n
+          y = (y.to_big_i * y) % n # y = (y**2) mod n
           return false if y == 1
           break if y == neg_one_mod
         end
         return false if y != neg_one_mod
       end
-      true                         # prime (with high probability)
+      true # prime (with high probability)
     end
 
     # see `.prime?`
@@ -145,8 +147,8 @@ module Crypto
     # ## Example
     #
     # ```
-    # Prime.int_from_factorization([[3, 2], [5, 1]])  #=> 45
-    # 3**2 * 5 #=> 45
+    # Prime.int_from_factorization([[3, 2], [5, 1]]) # => 45
+    # 3**2 * 5                                       # => 45
     # ```
     #
     def self.int_from_factorization(pd : Indexable(Indexable(Int)))
@@ -239,8 +241,8 @@ module Crypto
     #
     # Example
     # ```
-    # RSA::Math.coprime?(6, 35) #=> true
-    # RSA::Math.coprime?(6, 27) #=> false
+    # RSA::Math.coprime?(6, 35) # => true
+    # RSA::Math.coprime?(6, 27) # => false
     # ```
     #
     def self.coprime?(a, b)
@@ -437,10 +439,10 @@ module Crypto
         # There must be no primes between @primes[-1] and @next_to_check.
         @primes.concat([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101])
         # @next_to_check % 6 must be 1.
-        @next_to_check = 103            # @primes[-1] - @primes[-1] % 6 + 7
-        @ulticheck_index = 3            # @primes.index(@primes.reverse.find {|n|
+        @next_to_check = 103 # @primes[-1] - @primes[-1] % 6 + 7
+        @ulticheck_index = 3 # @primes.index(@primes.reverse.find {|n|
         #   n < Math.sqrt(@@next_to_check) })
-        @ulticheck_next_squared = 121   # @primes[@ulticheck_index + 1] ** 2
+        @ulticheck_next_squared = 121 # @primes[@ulticheck_index + 1] ** 2
       end
 
       # Returns the `index`th prime number.
@@ -499,7 +501,7 @@ module Crypto
         root = Math.sqrt(segment_max)
 
         segment = [] of Int::Signed | Nil
-        segment.concat(((segment_min + 1) .. segment_max).step(2).to_a)
+        segment.concat(((segment_min + 1)..segment_max).step(2).to_a)
 
         (1..Float64::INFINITY).each do |sieving|
           prime = @primes[sieving]
