@@ -4,6 +4,12 @@ version: 0.1.0
 authors:
   - Chris Watson <cawatson1993@gmail.com>
 
+dependencies:
+  async:
+    github: protoncr/async
+    branch: main
+    # path: ../async
+
 crystal: 0.33.0
 
 license: MIT
