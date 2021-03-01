@@ -35,6 +35,7 @@ module Crypto
     @offset : Int32
 
     @keylen : Int32
+    @key : Bytes # Bytes[BLOCK_SIZE]
 
     def initialize(hash_size : Int32, key : Bytes? = nil)
       if hash_size < 1 || hash_size > SIZE
@@ -50,14 +51,15 @@ module Crypto
 
       @h = Slice(UInt64).new(8)
       @c = Slice(UInt64).new(2)
+      @key = Bytes.new(BLOCK_SIZE)
       @block = Bytes.new(BLOCK_SIZE)
 
       # Reset
       @h = IV.clone
       @h[0] ^= @size | (@keylen.to_u64 << 8) | (1_u32 << 16) | (1_u32 << 24)
       @offset, @c[0], @c[1] = 0, 0_u64, 0_u64
-      if key
-        @block.copy_from(key)
+      if @keylen > 0
+        @block.copy_from(@key)
         @offset = BLOCK_SIZE
       end
     end

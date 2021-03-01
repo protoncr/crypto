@@ -49,21 +49,21 @@ module Crypto
       iv2 = encrypt ? iv[AES::BLOCK_SIZE, AES::BLOCK_SIZE] : iv[0, AES::BLOCK_SIZE]
 
       (0...data.size).step(AES::BLOCK_SIZE).each do |i|
-        (data + i).copy_to(chunk)
+        data[i ... (i + AES::BLOCK_SIZE)].copy_to(chunk)
 
         (0...AES::BLOCK_SIZE).each do |j|
           buffer[j] = data[i + j] ^ iv1[j]
         end
 
         modded = encrypt ? AES.encrypt(buffer, expanded_key) : AES.decrypt(buffer, expanded_key)
-        (output + i).copy_from(modded)
+        modded.copy_to(output[i ... (i + AES::BLOCK_SIZE)])
 
         (0...AES::BLOCK_SIZE).each do |j|
           output[i + j] ^= iv2[j]
         end
 
-        iv1 = output[i, AES::BLOCK_SIZE]
-        iv2 = chunk
+        output[i ... (i + AES::BLOCK_SIZE)].copy_to(iv1)
+        chunk.copy_to(iv2)
       end
 
       output

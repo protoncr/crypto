@@ -144,7 +144,7 @@ puts data == decrypted
 - Hashing
   - [ ] Blake
     - [x] Blake2b
-    - [x] Blake2s
+    - [ ] Blake2s
     - [ ] Blake3
     - [ ] Argon2
 - [ ] Key Derivation Functions

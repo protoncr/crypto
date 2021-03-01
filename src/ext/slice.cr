@@ -13,4 +13,11 @@ struct Slice(T)
   def +(other : self)
     self.class.concat(self, other)
   end
+
+  def clear
+    each_index do |i|
+      self[i] = T.new(0)
+    end
+    self
+  end
 end
