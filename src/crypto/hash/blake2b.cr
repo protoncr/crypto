@@ -167,7 +167,7 @@ module Crypto
       c[0] = c[0] &- remaining
 
       h = @h
-      self.class.hash_blocks(h, c, 0xFFFFFFFFFFFFFFFF, block)
+      self.class.hash_blocks(h, c, 0xFFFFFFFFFFFFFFFF_u64, block)
 
       h.each_with_index do |v, i|
         IO::ByteFormat::LittleEndian.encode(v.to_u64, hash[(8 * i)...])
@@ -359,7 +359,7 @@ module Crypto
       end
       c[0] = c[0] &- remaining
 
-      hash_blocks(h, c, 0xFFFFFFFFFFFFFFFF, block)
+      hash_blocks(h, c, 0xFFFFFFFFFFFFFFFF_u64, block)
 
       h[...((hash_size + 7) // 8)].each_with_index do |v, i|
         IO::ByteFormat::LittleEndian.encode(v.to_u64, sum[(8 * i)...])
